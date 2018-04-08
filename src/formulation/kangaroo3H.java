@@ -1,4 +1,15 @@
-package examples;
+package formulation;
+
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Session;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
@@ -27,10 +38,10 @@ import java.util.List;
     ---------------next line----------------
     ......
  */
-public class kangaroo3 {
+public class kangaroo3H {
 
-    public static Cluster cluster;
-    public static Session session;
+    //public static Cluster cluster;
+    //public static Session session;
     private static String nodes = "127.0.0.1";
 
     private static int ckn = 3;
@@ -38,15 +49,16 @@ public class kangaroo3 {
     public static void main(String[] args) {
         PrintWriter pw = null;
         try {
-            pw = new PrintWriter(new FileOutputStream("kangaroo_rock_pkey1.csv"));
+            pw = new PrintWriter(new FileOutputStream("kangaroo_v3_H.csv"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        Cluster cluster = Cluster.builder().addContactPoint(nodes).build();
-        Session session = cluster.connect();
+        //Cluster cluster = Cluster.builder().addContactPoint(nodes).build();
+        //Session session = cluster.connect();
 
-        String ks = "kangaroo_rock";
+        String ks = "kangaroo";
+        /*
         // columnspec
         // ck1 U[a,b]
         int dis_a1 = 1951;
@@ -57,31 +69,54 @@ public class kangaroo3 {
         // ck3 U[a,b]
         int dis_a3 = 1;
         int dis_b3 = 30;
-        //System.out.println("ck1 year dist: U[" + dis_a1 + "," + dis_b1 + "], ck2 month dist: U[" + dis_a2 + "," + dis_b2 + "], ck3 day dist: U["
-                //+ dis_a3 + "," + dis_b3 + "]");
-        //System.out.println("");
+        */
+        int [] dis_a = new int[]{1951,1,1};
+        int [] dis_b = new int[]{2050,12,30};
+
+        List<List> kangaroo_dist = new ArrayList<List>();
+        for(int i=0;i<ckn;i++) {
+            List colDist = new ArrayList();
+            colDist.add(true);
+            colDist.add(dis_a[i]);
+            colDist.add(dis_b[i]);
+            kangaroo_dist.add(colDist);
+        }
+        int dis_a1 = dis_a[0];
+        int dis_b1 = dis_b[0];
+        int dis_a2 = dis_a[1];
+        int dis_b2 = dis_b[1];
+        int dis_a3 = dis_a[2];
+        int dis_b3 = dis_b[2];
 
         // table schema definition (tables are already imported to cassandra)
         List<String> cflist = new ArrayList();
         List<String> cfschemalist = new ArrayList();
+        int[][] ackSeq = new int[6][];
         cflist.add("dm1");
         cfschemalist.add("ck1-ck2-ck3");
+        ackSeq[0]=new int[]{1,2,3};
         cflist.add("dm2");
         cfschemalist.add("ck2-ck1-ck3");
+        ackSeq[1]=new int[]{2,1,3};
         cflist.add("dm3");
         cfschemalist.add("ck2-ck3-ck1");
+        ackSeq[2]=new int[]{2,3,1};
         cflist.add("dm4");
         cfschemalist.add("ck3-ck1-ck2");
+        ackSeq[3]=new int[]{3,1,2};
         cflist.add("dm5");
         cfschemalist.add("ck1-ck3-ck2");
+        ackSeq[4]=new int[]{1,3,2};
         cflist.add("dm6");
         cfschemalist.add("ck3-ck2-ck1");
+        ackSeq[5]=new int[]{3,2,1};
         // write header
         String s = "qck1per,qck2per,qck3per,";
         for (int i = 0; i < cfschemalist.size(); i++) {
             s = s + cfschemalist.get(i) + ",";
         }
         pw.write(s + "\n");
+
 
         // 查询批次数
         int N = 100;
@@ -90,20 +125,20 @@ public class kangaroo3 {
         int[] qck2perArray = new int[]{0, 1, 0, 2, 1, 0, 3, 2, 1, 0, 4, 3, 2, 1, 0, 5, 4, 3, 2, 1, 0, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
         int[] qck3perArray = new int[]{0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7, 8, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         // 暂固定查询范围及点参
-        double qck1r1abs = 0.3;
-        double qck1r2abs = 0.7;
-        double qck1p1abs = 0.5;
-        double qck1p2abs = 0.5;
+        double qck1r1abs = 0.4;
+        double qck1r2abs = 0.6;
+        double qck1p1abs = 0.3;
+        double qck1p2abs = 0.3;
 
         double qck2r1abs = 0.3;
-        double qck2r2abs = 0.7;
-        double qck2p1abs = 0.5;
-        double qck2p2abs = 0.5;
+        double qck2r2abs = 0.6;
+        double qck2p1abs = 0.6;
+        double qck2p2abs = 0.3;
 
         double qck3r1abs = 0.3;
-        double qck3r2abs = 0.7;
-        double qck3p1abs = 0.5;
-        double qck3p2abs = 0.5;
+        double qck3r2abs = 0.6;
+        double qck3p1abs = 0.4;
+        double qck3p2abs = 0.6;
 
         for (int r = 0; r < qck1perArray.length; r++) { // 控制变量：改变查询占比
             //for (int r = 0; r < 1; r++) {
@@ -122,7 +157,7 @@ public class kangaroo3 {
             int qck1p1 = (int) Math.round(qck1p1abs * (dis_b2 - dis_a2) + dis_a2);
             int qck1p2 = (int) Math.round(qck1p2abs * (dis_b3 - dis_a3) + dis_a3);
             String q1_format = "select * from " + ks + ".%s"
-                    + " where pkey=1 and year >= " + qck1r1 + " and year <= " + qck1r2
+                    + " where year >= " + qck1r1 + " and year <= " + qck1r2
                     + " and month = " + qck1p1
                     + " and day = " + qck1p2
                     + " allow filtering;";
@@ -132,7 +167,7 @@ public class kangaroo3 {
             int qck2p1 = (int) Math.round(qck2p1abs * (dis_b1 - dis_a1) + dis_a1);
             int qck2p2 = (int) Math.round(qck2p2abs * (dis_b3 - dis_a3) + dis_a3);
             String q2_format = "select * from " + ks + ".%s"
-                    + " where pkey=1 and year = " + qck2p1
+                    + " where year = " + qck2p1
                     + " and month >= " + qck2r1 + " and month <= " + qck2r2
                     + " and day = " + qck2p2
                     + " allow filtering;";
@@ -142,7 +177,7 @@ public class kangaroo3 {
             int qck3p1 = (int) Math.round(qck3p1abs * (dis_b1 - dis_a1) + dis_a1);
             int qck3p2 = (int) Math.round(qck3p2abs * (dis_b2 - dis_a2) + dis_a2);
             String q3_format = "select * from " + ks + ".%s"
-                    + " where pkey=1 and year = " + qck3p1
+                    + " where year = " + qck3p1
                     + " and month = " + qck3p2
                     + " and day >= " + qck3r1 + " and day <= " + qck3r2
                     + " allow filtering;";
@@ -169,6 +204,18 @@ public class kangaroo3 {
                 String q2 = String.format(q2_format, cf);
                 String q3 = String.format(q3_format, cf);
 
+                // H公式代价计算
+                //H(int PN, int ckn, List<List> CKdist, int qckn, double qck_r1, double qck_r2, double[] qck_p, int[] ackSeq){
+                H h1 = new H(36000,3,kangaroo_dist, 1,qck1r1abs,qck1r2abs,new double[]{888,qck1p1abs,qck1p2abs},ackSeq[k]);
+                H h2 = new H(36000,3,kangaroo_dist, 2,qck2r1abs,qck2r2abs,new double[]{qck2p1abs,888,qck2p2abs},ackSeq[k]);
+                H h3 = new H(36000,3,kangaroo_dist, 3,qck3r1abs,qck3r2abs,new double[]{qck3p1abs,qck3p2abs,888},ackSeq[k]);
+                h1.calculate();
+                h2.calculate();
+                h3.calculate();
+                double res = h1.resP*qck1per+h2.resP*qck2per+h3.resP*qck3per;
+                System.out.println(", " + res);
+                pw.write("" + res + ",");
+                /*
                 // warm up  25%
                 for (int i = 0; i < N / 4; i++) {
                     for (int j = 0; j < qck1per; j++) {
@@ -207,14 +254,16 @@ public class kangaroo3 {
                 System.out.println(", " + costms);
                 //System.out.println("");
                 pw.write("" + costms + ",");
+                */
+
             }
             System.out.println("---------------next line----------------");
             pw.write("\n");
         }
 
         pw.close();
-        session.close();
-        cluster.close();
+        //session.close();
+        //cluster.close();
     }
 
 }

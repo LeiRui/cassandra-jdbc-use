@@ -27,7 +27,7 @@ import java.util.List;
     ---------------next line----------------
     ......
  */
-public class kangaroo3 {
+public class blockTest {
 
     public static Cluster cluster;
     public static Session session;
@@ -38,7 +38,7 @@ public class kangaroo3 {
     public static void main(String[] args) {
         PrintWriter pw = null;
         try {
-            pw = new PrintWriter(new FileOutputStream("kangaroo_rock_pkey1.csv"));
+            pw = new PrintWriter(new FileOutputStream("blockTest.csv"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -46,11 +46,11 @@ public class kangaroo3 {
         Cluster cluster = Cluster.builder().addContactPoint(nodes).build();
         Session session = cluster.connect();
 
-        String ks = "kangaroo_rock";
+        String ks = "blockTest";
         // columnspec
         // ck1 U[a,b]
-        int dis_a1 = 1951;
-        int dis_b1 = 2050;
+        int dis_a1 = 1;
+        int dis_b1 = 12;
         // ck2 U[a,b]
         int dis_a2 = 1;
         int dis_b2 = 12;
@@ -58,7 +58,7 @@ public class kangaroo3 {
         int dis_a3 = 1;
         int dis_b3 = 30;
         //System.out.println("ck1 year dist: U[" + dis_a1 + "," + dis_b1 + "], ck2 month dist: U[" + dis_a2 + "," + dis_b2 + "], ck3 day dist: U["
-                //+ dis_a3 + "," + dis_b3 + "]");
+        //+ dis_a3 + "," + dis_b3 + "]");
         //System.out.println("");
 
         // table schema definition (tables are already imported to cassandra)
@@ -86,24 +86,24 @@ public class kangaroo3 {
         // 查询批次数
         int N = 100;
         // 查询占比
-        int[] qck1perArray = new int[]{10, 9, 9, 8, 8, 8, 7, 7, 7, 7, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        int[] qck2perArray = new int[]{0, 1, 0, 2, 1, 0, 3, 2, 1, 0, 4, 3, 2, 1, 0, 5, 4, 3, 2, 1, 0, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
-        int[] qck3perArray = new int[]{0, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7, 8, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int[] qck1perArray = new int[]{10};//{10, 9, 9, 8, 8, 8, 7, 7, 7, 7, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        int[] qck2perArray = new int[]{0};//0, 1, 0, 2, 1, 0, 3, 2, 1, 0, 4, 3, 2, 1, 0, 5, 4, 3, 2, 1, 0, 6, 5, 4, 3, 2, 1, 0, 7, 6, 5, 4, 3, 2, 1, 0, 8, 7, 6, 5, 4, 3, 2, 1, 0, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+        int[] qck3perArray = new int[]{0};//, 0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 4, 5, 6, 7, 8, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         // 暂固定查询范围及点参
-        double qck1r1abs = 0.3;
-        double qck1r2abs = 0.7;
-        double qck1p1abs = 0.5;
-        double qck1p2abs = 0.5;
+        double qck1r1abs = 0;
+        double qck1r2abs = 1;
+        double qck1p1abs = 0.1;
+        double qck1p2abs = 0.1;
 
-        double qck2r1abs = 0.3;
-        double qck2r2abs = 0.7;
-        double qck2p1abs = 0.5;
-        double qck2p2abs = 0.5;
+        double qck2r1abs = 0.0;
+        double qck2r2abs = 0.2;
+        double qck2p1abs = 0.8;
+        double qck2p2abs = 0.9;
 
         double qck3r1abs = 0.3;
-        double qck3r2abs = 0.7;
-        double qck3p1abs = 0.5;
-        double qck3p2abs = 0.5;
+        double qck3r2abs = 0.6;
+        double qck3p1abs = 0.4;
+        double qck3p2abs = 0.6;
 
         for (int r = 0; r < qck1perArray.length; r++) { // 控制变量：改变查询占比
             //for (int r = 0; r < 1; r++) {
@@ -122,7 +122,7 @@ public class kangaroo3 {
             int qck1p1 = (int) Math.round(qck1p1abs * (dis_b2 - dis_a2) + dis_a2);
             int qck1p2 = (int) Math.round(qck1p2abs * (dis_b3 - dis_a3) + dis_a3);
             String q1_format = "select * from " + ks + ".%s"
-                    + " where pkey=1 and year >= " + qck1r1 + " and year <= " + qck1r2
+                    + " where pkey = 1 and year >= " + qck1r1 + " and year <= " + qck1r2
                     + " and month = " + qck1p1
                     + " and day = " + qck1p2
                     + " allow filtering;";
@@ -132,7 +132,7 @@ public class kangaroo3 {
             int qck2p1 = (int) Math.round(qck2p1abs * (dis_b1 - dis_a1) + dis_a1);
             int qck2p2 = (int) Math.round(qck2p2abs * (dis_b3 - dis_a3) + dis_a3);
             String q2_format = "select * from " + ks + ".%s"
-                    + " where pkey=1 and year = " + qck2p1
+                    + " where pkey = 1 and year = " + qck2p1
                     + " and month >= " + qck2r1 + " and month <= " + qck2r2
                     + " and day = " + qck2p2
                     + " allow filtering;";
@@ -142,7 +142,7 @@ public class kangaroo3 {
             int qck3p1 = (int) Math.round(qck3p1abs * (dis_b1 - dis_a1) + dis_a1);
             int qck3p2 = (int) Math.round(qck3p2abs * (dis_b2 - dis_a2) + dis_a2);
             String q3_format = "select * from " + ks + ".%s"
-                    + " where pkey=1 and year = " + qck3p1
+                    + " where pkey = 1 and year = " + qck3p1
                     + " and month = " + qck3p2
                     + " and day >= " + qck3r1 + " and day <= " + qck3r2
                     + " allow filtering;";
