@@ -69,7 +69,7 @@ public class H_ian {
     }
 
 
-    public double calculate(int rowSize) {
+    public int calculate(int rowSize) {
         resP = 1;
         for (int i = 0; i < qackn; i++) { // qackn是从0开始的，这里刚好表示qckn-1个
             resP *= ACKdist.get(i).getPoint(qack_p[i]);
@@ -88,6 +88,6 @@ public class H_ian {
                 resP *= ACKdist.get(qackn).getBetween(qck_r1, qck_r2, Column_ian.rangeType.LoRo);
                 break;
         }
-        return Math.ceil(resP*totalRowNumber*rowSize/65536); // TODO
+        return (int)Math.ceil(resP*totalRowNumber*rowSize/65536); // TODO
     }
 }

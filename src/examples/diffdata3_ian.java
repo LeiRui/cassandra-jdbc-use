@@ -144,7 +144,7 @@ public class diffdata3_ian{
             // H公式
             H_ian h = new H_ian(1000000,ckn, CKdist, 1, qck1r1, qck1r2,true, true,
                     new double[]{888, qck1p1, qck1p2},ackSeq[k]);
-            System.out.print(", "+h.calculate());
+            System.out.print(", "+h.calculate()+", "+h.calculate(25));
 
 
 

@@ -98,7 +98,7 @@ public class rabbit_ian {
 
         // 暂固定查询范围及点参
         double qck1r1abs = 0;
-        double qck1r2abs = 1;
+        double qck1r2abs = 0.1;
         double qck1p1abs = 0.5;
         double qck1p2abs = 0.5;
 
@@ -112,8 +112,8 @@ public class rabbit_ian {
         // qck
         int qck1r1 = (int)Math.floor(qck1r1abs * (ck1.xmax_ - ck1.xmin_) + ck1.xmin_); // TODO double int
         int qck1r2 = (int)Math.floor(qck1r2abs * (ck1.xmax_ - ck1.xmin_) + ck1.xmin_);
-        int qck1p1 = (int)Math.floor(qck1p1abs * (ck1.xmax_ - ck1.xmin_) + ck1.xmin_);
-        int qck1p2 = (int)Math.floor(qck1p2abs * (ck1.xmax_ - ck1.xmin_) + ck1.xmin_);
+        int qck1p1 = (int)Math.floor(qck1p1abs * (ck2.xmax_ - ck2.xmin_) + ck2.xmin_);
+        int qck1p2 = (int)Math.floor(qck1p2abs * (ck3.xmax_ - ck3.xmin_) + ck3.xmin_);
         String q1_format = "select * from " + ks + ".%s"
                 + " where pkey=1 and ck1 > " + qck1r1 + " and ck1 < " + qck1r2 // TODO
                 + " and ck2 = " + qck1p1
@@ -133,7 +133,7 @@ public class rabbit_ian {
             //HwithoutPrefix h = new HwithoutPrefix(24,65536,1000000,3,data_dist, 1,qck1r1abs,qck1r2abs,new double[]{888,qck1p1abs,qck1p2abs},ackSeq[k]);
             H_ian h = new H_ian(1000000,ckn, CKdist, 1, qck1r1, qck1r2,true, true,
                      new double[]{888, qck1p1, qck1p2},ackSeq[k]);
-            System.out.print(", "+h.calculate());
+            System.out.print(", "+h.calculate()+", "+h.calculate(24));
 
             // 代入cf，构造查询语句
             String q1 = String.format(q1_format, cf);
