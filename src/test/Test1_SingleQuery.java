@@ -101,7 +101,7 @@ public class Test1_SingleQuery {
         int qck1p1 = (int)Math.floor(qck1p1abs * (ck2.xmax_ - ck2.xmin_) + ck2.xmin_);
         int qck1p2 = (int)Math.floor(qck1p2abs * (ck3.xmax_ - ck3.xmin_) + ck3.xmin_);
         String q1_format = "select * from " + ks + ".%s"
-                + " where pkey=1 and ck1 > " + qck1r1 + " and ck1 < " + qck1r2 // TODO
+                + " where pkey=1 and ck1 >= " + qck1r1 + " and ck1 <= " + qck1r2 // TODO
                 + " and ck2 = " + qck1p1
                 + " and ck3 = " + qck1p2
                 + " allow filtering;";
