@@ -13,7 +13,7 @@ public class eg1{
     private static String nodes = "127.0.0.1";
     public static void main(String[] args) {
         Cluster cluster = Cluster.builder().addContactPoint(nodes).build();
-        Session session = cluster.connect("kangaroo");
+        Session session = cluster.connect("panda");
         /*
         session.execute("USE demo;");
         session.execute("CREATE TABLE IF NOT EXISTS testTable (id varchar PRIMARY KEY , name varchar);");
@@ -39,13 +39,10 @@ public class eg1{
         }
         */
 
-        ResultSet result1=session.execute("select * from kangaroo.dm1");
+        ResultSet result1=session.execute("select * from panda.dm1");
 
         List<Row> rowList = result1.all();
         System.out.println(rowList.size());
-
-
-
 
         session.close();
         cluster.close();
