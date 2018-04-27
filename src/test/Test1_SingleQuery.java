@@ -60,7 +60,6 @@ public class Test1_SingleQuery {
         CKdist.add(ck3);
 
 
-
         // table schema definition (tables are already created in cassandra)
         List<String> cflist = new ArrayList();
         List<String> cfschemalist = new ArrayList();
